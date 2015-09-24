@@ -8,7 +8,7 @@ Switch-AzureMode -name AzureResourceManager
 #######################################
 
 # Count of runs
-$count = 1
+$count = 3
 
 # Variables
 #$templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\mainTemplate.json"
@@ -16,7 +16,7 @@ $templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\azurecon\mainTemplate
 $paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\parameters.json"
 $params = Get-content $paramsFile | convertfrom-json
 $location = "westus"
-$rgprefix = "SharepointFarm"
+$rgprefix = "AC14"
 $premium = $true
 
 # Generate parameter object
@@ -31,7 +31,7 @@ for($i = 0; $i -lt $count; $i++)
 {
     # Create new Resource Group
     $d = get-date
-    $rgname = $rgprefix #+ '-'+ $d.Year + $d.Month + $d.Day + '-' + $d.Hour + $d.Minute + $d.Second
+    $rgname = $rgprefix + '-'+ $d.Year + $d.Month + $d.Day + '-' + $d.Hour + $d.Minute + $d.Second
     New-AzureResourceGroup -Name $rgname -Location $location -Verbose 
     
     # Construct parameter set
