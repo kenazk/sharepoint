@@ -161,6 +161,28 @@
                         "count": 2
                     },
                     {
+                        "name": "witnessVMSize",
+                        "type": "Microsoft.Compute.SizeSelector",
+                        "label": "Virtual machine size",
+                        "toolTip": "The size of the virtual machine for the SQL witness.",
+                        "recommendedSizes": [
+                            "Standard_DS1"
+                        ],
+                        "constraints": {
+                            "allowedSizes": [
+                                "Standard_D1",
+                                "Standard_DS1"
+                            ]
+                        },
+                        "osPlatform": "Windows",
+                        "imageReference": {
+                            "publisher": "MicrosoftSQLServer",
+                            "offer": "SQL2014-WS2012R2",
+                            "sku": "Enterprise"
+                        },
+                        "count": 1
+                    },
+                    {
                         "name": "sqlServerServiceAccountUsername",
                         "type": "Microsoft.Compute.UserNameTextBox",
                         "label": "Service account username",
@@ -354,6 +376,7 @@
             "adminPassword": "[steps('infrastructureConfig').adminPassword]",
             "adVMSize": "[steps('adConfig').adVmSize]",
             "sqlVMSize": "[steps('sqlConfig').sqlVmSize]",
+            "witnessVMSize" : "[steps('sqlConfig').witnessVMSize]",
             "spVMSize": "[steps('spConfig').spVmSize]",
             "domainName": "[steps('adConfig').domainName]",
             "dnsPrefix": "[steps('spConfig').spWebPublicIP.domainNameLabel]",
