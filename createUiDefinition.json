@@ -82,7 +82,7 @@
                     {
                         "name": "adVmSize",
                         "type": "Microsoft.Compute.SizeSelector",
-                        "label": "Virtual machine size",
+                        "label": "Active Directory virtual machine size",
                         "toolTip": "The size of the virtual machines for the primary and backup domain controllers.",
                         "recommendedSizes": [
                             "Standard_DS2",
@@ -129,7 +129,7 @@
                     {
                         "name": "sqlVmSize",
                         "type": "Microsoft.Compute.SizeSelector",
-                        "label": "Virtual machine size",
+                        "label": "SQL Server virtual machine size",
                         "toolTip": "The size of the virtual machines for the primary and secondary replicas.",
                         "recommendedSizes": [
                             "Standard_DS3",
@@ -163,7 +163,7 @@
                     {
                         "name": "witnessVMSize",
                         "type": "Microsoft.Compute.SizeSelector",
-                        "label": "Virtual machine size",
+                        "label": "SQL Witness virtual machine size",
                         "toolTip": "The size of the virtual machine for the SQL witness.",
                         "recommendedSizes": [
                             "Standard_DS1"
@@ -248,7 +248,7 @@
                     {
                         "name": "spVmSize",
                         "type": "Microsoft.Compute.SizeSelector",
-                        "label": "Virtual machine size",
+                        "label": "SharePoint virtual machine size",
                         "toolTip": "The size of the virtual machines for the SharePoint web and app tiers.",
                         "recommendedSizes": [
                             "Standard_DS3",
