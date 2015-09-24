@@ -447,7 +447,7 @@
 			"fswConfigurationFunction":"CreateFileShareWitness.ps1\\CreateFileShareWitness",
 			"sqlAOPrepareModulesURL":"[concat(variables('assetLocation'),'/PrepareAlwaysOnSqlServer.ps1.zip')]",
 			"sqlAOPrepareConfigurationFunction":"PrepareAlwaysOnSqlServer.ps1\\PrepareAlwaysOnSqlServer",
-			"createClusterModulesURL":"[concat(variables('assetLocation'),'/CreateFailoverCluster-nolistener.ps1.zip')]",
+			"createClusterModulesURL":"[concat(variables('assetLocation'),'/CreateFailoverCluster.ps1.zip')]",
 			"createClusterConfigurationFunction":"CreateFailoverCluster.ps1\\CreateFailoverCluster",
 			"spModulesURL":"[concat(variables('assetLocation'),'/ConfigureSharePointServerHA.ps1.zip')]",
 			"spConfigurationFunction":"ConfigureSharePointServerHA.ps1\\ConfigureSharePointServerHA",
