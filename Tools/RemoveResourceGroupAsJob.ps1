@@ -1,7 +1,9 @@
-﻿switch-azuremode -name AzureResourceManager
+﻿select-AzureSubscription -subscriptionid 85182b66-6daa-40c6-bfa8-42dcc6d6845e
+
+switch-azuremode -name AzureResourceManager
 
 $location = "*"
-$rgPrefix = "AC*"
+$rgPrefix = "*"
 
 $c = get-content C:\daily\2015-8-28\rgs.txt
 

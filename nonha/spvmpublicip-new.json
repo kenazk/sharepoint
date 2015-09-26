@@ -36,7 +36,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[parameters('sppublicIPAddressName')]",
       "location": "[parameters('location')]",
@@ -48,7 +48,7 @@
       }
     },
     {
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2015-06-15",
       "name": "[parameters('spLBName')]",
       "type": "Microsoft.Network/loadBalancers",
       "location": "[parameters('location')]",
