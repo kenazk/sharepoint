@@ -367,7 +367,8 @@
 		"CreatingAvailabilitySetsUrl":"[concat(parameters('baseUrl'),'/availabilitySets.json')]",
 		"vnetSetupURL" : "[concat(parameters('baseUrl'),'/vnet-new.json')]",
 		"setupLBsUrl" : "[concat(parameters('baseUrl'),'/loadBalancers.json')]",
-		"creatingNICSUrl" : "[concat(parameters('baseUrl'),'/creatingNICS.json')]"
+		"creatingNICSUrl" : "[concat(parameters('baseUrl'),'/creatingNICS.json')]",
+		"ProvisioningADDomainControllerUrl" : "[concat(parameters('baseUrl'),'/provisioningDomainController.json')]",
 	},
 	"resources": [
 		{
@@ -622,103 +623,67 @@
          }
     },
 		{
-			"apiVersion": "2015-06-15",
-			"type": "Microsoft.Compute/virtualMachines",
-			"name": "[variables('adVMName')]",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpStorageAccount",
-				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
-				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
-				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
-			],
-			"properties": {
-				"hardwareProfile": {
-					"vmSize": "[parameters('adVMSize')]"
-				},
-				"availabilitySet": {
-					"id": "[resourceId('Microsoft.Compute/availabilitySets', variables('adAvailabilitySetName'))]"
-				},
-				"osProfile": {
-					"computername": "[variables('adVMName')]",
-					"adminUsername": "[parameters('adminUsername')]",
-					"adminPassword": "[parameters('adminPassword')]"
-				},
-				"storageProfile": {
-					"imageReference": {
-						"publisher": "MicrosoftWindowsServer",
-						"offer": "WindowsServer",
-						"sku": "2012-R2-Datacenter",
-						"version": "latest"
-					},
-					"osDisk": {
-						"name": "osdisk",
-						"vhd": {
-							"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/',variables('adVMName'),'-osdisk.vhd')]"
-						},
-						"caching": "ReadWrite",
-						"createOption": "FromImage"
-					},
-					"dataDisks": [
-						{
-							"vhd": {
-								"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/', variables('adDataDisk'),'-1.vhd')]"
+         "name":"ProvisioningADDomainController",
+         "type":"Microsoft.Resources/deployments",
+         "apiVersion":"2015-01-01",
+         "dependsOn":[
+					 "Microsoft.Resources/deployments/SettingUpStorageAccount",
+					 "Microsoft.Resources/deployments/CreatingNetworkInterfaces",
+					 "Microsoft.Resources/deployments/CreatingAvailabilitySets",
+					 "Microsoft.Resources/deployments/SettingUpLoadBalancers"
+         ],
+         "properties":{
+            "mode":"Incremental",
+            "templateLink":{
+               "uri":"[variables('ProvisioningADDomainControllerUrl')]",
+               "contentVersion":"1.0.0.0"
+            },
+            "parameters":{
+							"location": {
+							  "value": "[parameters('location')]"
 							},
-							"name": "[concat(variables('adVMName'),'-data-disk1')]",
-							"caching": "None",
-							"createOption": "empty",
-							"diskSizeGB": "[variables('adDataDiskSize')]",
-							"lun": 0
-						}
-					]
-				},
-				"networkProfile": {
-					"networkInterfaces": [
-						{
-							"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('adNicName'))]"
-						}
-					]
-				}
-			},
-			"resources": [
-				{
-					"type": "Microsoft.Compute/virtualMachines/extensions",
-					"name": "[concat(variables('adVMName'),'/InstallDomainController')]",
-					"apiVersion": "2015-06-15",
-					"location": "[parameters('location')]",
-					"dependsOn": [
-						"[resourceId('Microsoft.Compute/virtualMachines', variables('adVMName'))]"
-					],
-					"properties": {
-						"publisher": "Microsoft.Powershell",
-						"type": "DSC",
-						"typeHandlerVersion": "2.6",
-						"settings": {
-							"ModulesUrl": "[variables('adModulesURL')]",
-							"ConfigurationFunction": "[variables('adConfigurationFunction')]",
-							"Properties": {
-								"DomainName": "[parameters('domainName')]",
-								"AdminCreds": {
-									"UserName": "[parameters('adminUserName')]",
-									"Password": "PrivateSettingsRef:AdminPassword"
-								}
+							"adVMName": {
+							  "value": "[variables('adVMName')]"
+							},
+							"adVMSize": {
+							  "value": "[parameters('adVMSize')]"
+							},
+							"adAvailabilitySetName": {
+							  "value": "[variables('adAvailabilitySetName')]"
+							},
+							"adminUsername": {
+							  "value": "[parameters('adminUsername')]"
+							},
+							"adminPassword": {
+							  "value": "[parameters('adminPassword')]"
+							},
+							"storageAccountName": {
+							  "value": "[parameters('storageAccountName')]"
+							},
+							"adDataDisk": {
+							  "value": "[variables('adDataDisk')]"
+							},
+							"adNicName": {
+							  "value": "[variables('adNicName')]"
+							},
+							"adModulesURL": {
+							  "value": "[variables('adModulesURL')]"
+							},
+							"adConfigurationFunction": {
+							  "value": "[variables('adConfigurationFunction')]"
+							},
+							"domainName": {
+							  "value": "[parameters('domainName')]"
 							}
-						},
-						"protectedSettings": {
-							"Items": {
-								"AdminPassword": "[parameters('adminPassword')]"
-							}
-						}
-					}
-				}
-			]
-		},
+            }
+         }
+    },
 		{
-			"name": "UpdateVNetDNS",
+			"name": "UpdatingDNStoPrimaryADVM",
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2015-01-01",
 			"dependsOn": [
-				"[concat('Microsoft.Compute/virtualMachines/', variables('adVMName'),'/extensions/InstallDomainController')]"
+				"Microsoft.Resources/deployments/ProvisioningADDomainController"
 			],
 			"properties": {
 				"mode": "Incremental",
@@ -756,7 +721,7 @@
 				"Microsoft.Resources/deployments/SettingUpStorageAccount",
 				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
 				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
-				"Microsoft.Resources/deployments/UpdateVNetDNS"
+				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM"
 			],
 			"properties": {
 				"hardwareProfile": {
@@ -824,7 +789,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[concat('Microsoft.Compute/virtualMachines/', variables('sqlVMName'))]",
-				"Microsoft.Resources/deployments/UpdateVNetDNS"
+				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM"
 			],
 			"properties": {
 				"publisher": "Microsoft.Powershell",
@@ -867,7 +832,7 @@
 				"Microsoft.Resources/deployments/SettingUpStorageAccount",
 				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
 				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
-				"Microsoft.Resources/deployments/UpdateVNetDNS",
+				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM",
 				"[concat('Microsoft.Compute/virtualMachines/', variables('sqlVMName'),'/extensions/CreateSQLServer')]"
 			],
 			"properties": {

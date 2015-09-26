@@ -14,7 +14,7 @@ $templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\mainTemplate.js
 $paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\parameters.json"
 $params = Get-content $paramsFile | convertfrom-json
 $location = "westus"
-$rgprefix = "NHA3"
+$rgprefix = "NHA4"
 $premium = $true
 
 # Generate parameter object

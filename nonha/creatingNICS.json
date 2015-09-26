@@ -30,7 +30,7 @@
       "type": "string"
     },
     "sqlRDPNATRuleID": {
-      "type": "[variables('sqlRDPNATRuleID')]"
+      "type": "string"
     },
     "spNicName": {
       "type": "string"
