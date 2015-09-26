@@ -52,8 +52,10 @@ for($i = 0; $i -lt $count; $i++)
         $hash.sqlVMSize = "Standard_D3"
         $hash.adVMSize = "Standard_D1"
     }
-
+  
     # Run as asynchronous job
+
+    $hash | ft
     $jobName = "spDeployment-" + $i;
     $sb = {
         param($rgname, $templateFile, $hash)

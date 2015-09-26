@@ -359,13 +359,14 @@
 		"sqlConfigurationFunction": "ConfigureSqlServer.ps1\\ConfigureSqlServer",
 		"spModulesURL": "[concat(variables('AssetLocation'),'/ConfigureSharePointServer.ps1.zip')]",
 		"spConfigurationFunction": "ConfigureSharePointServer.ps1\\ConfigureSharePointServer",
-		"SettingUpSharepointIPandLBURL" : "[concat(parameters('baseUrl'),'/spvmpublicip-',parameters('spPublicIPNewOrExisting'),'.json')]",
+		"SettingUpSharepointIPURL" : "[concat(parameters('baseUrl'),'/publicip-',parameters('spPublicIPNewOrExisting'),'.json')]",
 		"provisioningSharepointUri" : "[concat(parameters('baseUrl'),'/provisioningSharepoint.json')]",
 		"storageAccountSetupURL" : "[concat(parameters('baseUrl'),'/storageAccount-',parameters('storageAccountNewOrExisting'),'.json')]",
 		"creatingPublicIPsUrl" : "[concat(parameters('baseUrl'),'/creatingPublicIPs.json')]",
 		"vnetwithDNSTemplateUrl": "[concat(parameters('baseUrl'),'/vnet-with-dns-server.json')]",
 		"CreatingAvailabilitySetsUrl":"[concat(parameters('baseUrl'),'/availabilitySets.json')]",
-		"vnetSetupURL" : "[concat(parameters('baseUrl'),'/vnet-new.json')]"
+		"vnetSetupURL" : "[concat(parameters('baseUrl'),'/vnet-new.json')]",
+		"setupLBsUrl" : "[concat(parameters('baseUrl'),'/loadBalancers.json')]"
 	},
 	"resources": [
 		{
@@ -473,136 +474,92 @@
        }
     },
 		{
-	      "name": "SettingUpSharepointIPandLB",
+	      "name": "SettingUpSharepointIP",
 	      "type": "Microsoft.Resources/deployments",
 	      "apiVersion": "2015-01-01",
 	      "properties": {
 	        "mode": "Incremental",
 	        "templateLink": {
-	          "uri": "[variables('SettingUpSharepointIPandLBURL')]",
+	          "uri": "[variables('SettingUpSharepointIPURL')]",
 	          "contentVersion": "1.0.0.0"
 	        },
 	        "parameters": {
 				    "location": {
 				      "value" : "[parameters('location')]"
 				    },
-				    "sppublicIPAddressName": {
+				    "publicIpAddressName": {
 				      "value" : "[parameters('sppublicIPAddressName')]"
 				    },
 				    "publicIPAddressType" : {
 				      "value" : "[variables('publicIPAddressType')]"
 				    },
-				    "spDNSPrefix" : {
+				    "dnsPrefix" : {
 				      "value" : "[parameters('spDNSPrefix')]"
 				    },
-				    "spLBName" : {
-				      "value" : "[variables('spLBName')]"
-				    },
-				    "LBFE" :{
-				      "value" : "[variables('LBFE')]"
-				    },
-				    "LBBE" : {
-				      "value" : "[variables('LBBE')]"
-				    },
-				    "RDPNAT" : {
-				      "value" : "[variables('RDPNAT')]"
-				    },
-				    "spWebNAT" : {
-				      "value" : "[variables('spWebNAT')]"
-				    },
-				    "spPublicIPRGName" : {
-				    	"value" : "[parameters('spPublicIPRGName')]"
+						"publicIpRGName": {
+				      "value": "[parameters('spPublicIPRGName')]"
 				    }
 	        }
 	      }
-	    },
+    },
 		{
-			"apiVersion": "2015-06-15",
-			"name": "[variables('adlbName')]",
-			"type": "Microsoft.Network/loadBalancers",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpPublicIPs"
-			],
-			"properties": {
-				"frontendIPConfigurations": [
-					{
-						"name": "[variables('LBFE')]",
-						"properties": {
-							"publicIPAddress": {
-								"id" : "[reference('SettingUpPublicIPs').outputs.adPublicIpResourceId.value]"
-							}
-						}
-					}
-				],
-				"backendAddressPools": [
-					{
-						"name": "[variables('LBBE')]"
-					}
-				],
-				"inboundNatRules": [
-					{
-						"name": "[variables('RDPNAT')]",
-						"properties": {
-							"frontendIPConfiguration": {
-								"id": "[variables('adlbFEConfigID')]"
+         "name":"SettingUpLoadBalancers",
+         "type":"Microsoft.Resources/deployments",
+         "apiVersion":"2015-01-01",
+         "dependsOn":[
+            "Microsoft.Resources/deployments/SettingUpSharepointIP",
+            "Microsoft.Resources/deployments/SettingUpPublicIPs"
+         ],
+         "properties":{
+            "mode":"Incremental",
+            "templateLink":{
+               "uri":"[variables('setupLBsUrl')]",
+               "contentVersion":"1.0.0.0"
+            },
+            "parameters":{
+							"location": {
+							  "value": "[parameters('location')]"
 							},
-							"protocol": "tcp",
-							"frontendPort": 3389,
-							"backendPort": 3389,
-							"enableFloatingIP": false
-						}
-					}
-				]
-			}
-		},
-		{
-			"apiVersion": "2015-06-15",
-			"name": "[variables('sqllbName')]",
-			"type": "Microsoft.Network/loadBalancers",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpPublicIPs"
-			],
-			"properties": {
-				"frontendIPConfigurations": [
-					{
-						"name": "[variables('LBFE')]",
-						"properties": {
-							"publicIPAddress": {
-								"id": "[reference('SettingUpPublicIPs').outputs.sqlPublicIpResourceId.value]"
-							}
-						}
-					}
-				],
-				"backendAddressPools": [
-					{
-						"name": "[variables('LBBE')]"
-					}
-				],
-				"inboundNatRules": [
-					{
-						"name": "[variables('RDPNAT')]",
-						"properties": {
-							"frontendIPConfiguration": {
-								"id": "[variables('sqllbFEConfigID')]"
+							"spLBName" : {
+							  "value" : "[variables('splbName')]"
 							},
-							"protocol": "tcp",
-							"frontendPort": 3389,
-							"backendPort": 3389,
-							"enableFloatingIP": false
-						}
-					}
-				]
-			}
-		},
+							"sqllbName" : {
+							  "value" : "[variables('splbName')]"
+							},
+							"LBFE" :{
+							  "value" : "[variables('LBFE')]"
+							},
+							"LBBE" : {
+							  "value" : "[variables('LBBE')]"
+							},
+							"RDPNAT" : {
+							  "value" : "[variables('RDPNAT')]"
+							},
+							"spWebNAT" : {
+							  "value" : "[variables('spWebNAT')]"
+							},
+							"adlbName" : {
+							  "value" : "[variables('adlbName')]"
+							},
+							"spPublicIPResourceId" : {
+							  "value" : "[reference('SettingUpSharepointIP').outputs.publicIpId.value]"
+							},
+							"adPublicIpResourceId" : {
+							  "value" : "[reference('SettingUpPublicIPs').outputs.adPublicIpResourceId.value]"
+							},
+							"sqlPublicIpResourceId" : {
+							  "value" : "[reference('SettingUpPublicIPs').outputs.sqlPublicIpResourceId.value]"
+							}
+            }
+         }
+    },
 		{
 			"name": "[variables('adNicName')]",
 			"type": "Microsoft.Network/networkInterfaces",
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/SettingUpVirtualNetwork",
-				"[concat('Microsoft.Network/loadBalancers/',variables('adlbName'))]"
+				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
 			],
 			"apiVersion": "2015-06-15",
 			"properties": {
@@ -637,7 +594,7 @@
 			"apiVersion": "2015-06-15",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/SettingUpVirtualNetwork",
-				"[concat('Microsoft.Network/loadBalancers/',variables('sqllbName'))]"
+				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
 			],
 			"properties": {
 				"ipConfigurations": [
@@ -670,7 +627,7 @@
 			"apiVersion": "2015-06-15",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/SettingUpVirtualNetwork",
-				"Microsoft.Resources/deployments/SettingUpSharepointIPandLB"
+				"Microsoft.Resources/deployments/SettingUpSharepointIP"
 			],
 			"properties": {
 				"ipConfigurations": [
@@ -683,15 +640,15 @@
 							},
 							"loadBalancerBackendAddressPools": [
 								{
-									"id": "[concat(reference('SettingUpSharepointIPandLB').outputs.splbID.value,'/backendAddressPools/',variables('LBBE'))]"
+									"id": "[concat(reference('SettingUpSharepointIP').outputs.splbID.value,'/backendAddressPools/',variables('LBBE'))]"
 								}
 							],
 							"loadBalancerInboundNatRules": [
 								{
-									"id": "[concat(reference('SettingUpSharepointIPandLB').outputs.splbID.value,'/inboundNatRules/',variables('RDPNAT'))]"
+									"id": "[concat(reference('SettingUpSharepointIP').outputs.splbID.value,'/inboundNatRules/',variables('RDPNAT'))]"
 								},
 								{
-									"id": "[concat(reference('SettingUpSharepointIPandLB').outputs.splbID.value,'/inboundNatRules/',variables('spWebNAT'))]"
+									"id": "[concat(reference('SettingUpSharepointIP').outputs.splbID.value,'/inboundNatRules/',variables('spWebNAT'))]"
 								}
 							]
 						}
@@ -708,7 +665,7 @@
 				"Microsoft.Resources/deployments/SettingUpStorageAccount",
 				"[resourceId('Microsoft.Network/networkInterfaces',variables('adNicName'))]",
 				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
-				"[resourceId('Microsoft.Network/loadBalancers',variables('adlbName'))]"
+				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
 			],
 			"properties": {
 				"hardwareProfile": {
@@ -1003,7 +960,7 @@
 				"apiVersion": "2015-01-01",
 				"dependsOn": [
 					"[concat('Microsoft.Compute/virtualMachines/', variables('spVMName'))]",
-					"Microsoft.Resources/deployments/SettingUpSharepointIPandLB"
+					"Microsoft.Resources/deployments/SettingUpSharepointIP"
 				],
 				"properties": {
 					"mode": "Incremental",
@@ -1067,7 +1024,7 @@
 							"value" : "[parameters('sharePointFarmPassphrasePassword')]"
 						},
 						"fqdn" : {
-				    	"value" : "[reference('SettingUpSharepointIPandLB').outputs.fqdn.value]"
+				    	"value" : "[reference('SettingUpSharepointIP').outputs.fqdn.value]"
 				    }
 					}
 				}
@@ -1075,7 +1032,7 @@
 	],
 	"outputs": {
     "fqdn" : {
-      "value": "[reference('SettingUpSharepointIPandLB').outputs.fqdn.value]",
+      "value": "[reference('SettingUpSharepointIP').outputs.fqdn.value]",
       "type" : "string"
     }
   }
