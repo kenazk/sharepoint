@@ -785,72 +785,15 @@
 			}
 		},
 		{
-			"apiVersion": "2015-06-15",
-			"type": "Microsoft.Compute/virtualMachines",
-			"name": "[variables('spVMName')]",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpStorageAccount",
-				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
-				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
-				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM",
-				"Microsoft.Resources/deployments/ProvisioningSQLServer"
-			],
-			"properties": {
-				"hardwareProfile": {
-					"vmSize": "[parameters('spVMSize')]"
-				},
-				"availabilitySet": {
-					"id": "[resourceId('Microsoft.Compute/availabilitySets', variables('spAvailabilitySetName'))]"
-				},
-				"osProfile": {
-					"computername": "[variables('spVMName')]",
-					"adminUsername": "[parameters('adminUsername')]",
-					"adminPassword": "[parameters('adminPassword')]"
-				},
-				"storageProfile": {
-					"imageReference": {
-						"publisher": "MicrosoftSharePoint",
-						"offer": "MicrosoftSharePointServer",
-						"sku": "2013",
-						"version": "latest"
-					},
-					"osDisk": {
-						"name": "osdisk",
-						"vhd": {
-							"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/',variables('spVMName'),'-osdisk.vhd')]"
-						},
-						"caching": "ReadWrite",
-						"createOption": "FromImage"
-					},
-					"dataDisks": [
-						{
-							"vhd": {
-								"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/',variables('spVMName'),'-', variables('spDataDisk'),'-1.vhd')]"
-							},
-							"name": "[concat(variables('spVMName'),'-data-disk1')]",
-							"createOption": "empty",
-							"caching": "None",
-							"diskSizeGB": "[variables('spDataDiskSize')]",
-							"lun": 0
-						}
-					]
-				},
-				"networkProfile": {
-					"networkInterfaces": [
-						{
-							"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('spNicName'))]"
-						}
-					]
-				}
-				}
-			},
-		{
 				"name": "ProvisioningSharepointFarm",
 				"type": "Microsoft.Resources/deployments",
 				"apiVersion": "2015-01-01",
 				"dependsOn": [
-					"[concat('Microsoft.Compute/virtualMachines/', variables('spVMName'))]",
+					"Microsoft.Resources/deployments/SettingUpStorageAccount",
+					"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
+					"Microsoft.Resources/deployments/CreatingAvailabilitySets",
+					"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM",
+					"Microsoft.Resources/deployments/ProvisioningSQLServer",
 					"Microsoft.Resources/deployments/SettingUpSharepointIP"
 				],
 				"properties": {
@@ -861,62 +804,68 @@
 					},
 					"parameters": {
 						"spVMName": {
-							"value": "[variables('spVMName')]"
+						  "value": "[variables('spVMName')]"
 						},
 						"location": {
-							"value" : "[parameters('location')]"
+						  "value" : "[parameters('location')]"
 						},
 						"spModulesURL" : {
-							"value" : "[variables('spModulesURL')]"
+						  "value" : "[variables('spModulesURL')]"
 						},
 						"spConfigurationFunction" : {
-							"value" : "[variables('spConfigurationFunction')]"
+						  "value" : "[variables('spConfigurationFunction')]"
 						},
 						"domainName" : {
-							"value" : "[parameters('domainName')]"
+						  "value" : "[parameters('domainName')]"
 						},
 						"adminUserName" :{
-							"value" : "[parameters('adminUserName')]"
+						  "value" : "[parameters('adminUserName')]"
 						},
 						"sharePointSetupUserAccountUserName" : {
-							"value" : "[parameters('sharePointSetupUserAccountUserName')]"
+						  "value" : "[parameters('sharePointSetupUserAccountUserName')]"
 						},
 						"sharePointFarmAccountUserName" : {
-							"value" : "[parameters('sharePointFarmAccountUserName')]"
+						  "value" : "[parameters('sharePointFarmAccountUserName')]"
 						},
 						"configDatabaseName" : {
-							"value" : "[variables('configDatabaseName')]"
+						  "value" : "[variables('configDatabaseName')]"
 						},
 						"administrationContentDatabaseName" : {
-							"value" : "[variables('administrationContentDatabaseName')]"
+						  "value" : "[variables('administrationContentDatabaseName')]"
 						},
 						"sqlVMName" : {
-							"value" : "[variables('sqlVMName')]"
-						},
-						"spCentralAdminPort" : {
-							"value" : "[variables('spCentralAdminPort')]"
-						},
-						"contentDatabaseName" : {
-							"value" : "[variables('contentDatabaseName')]"
-						},
-						"spSiteTemplateName" : {
-							"value" : "[parameters('spSiteTemplateName')]"
-						},
-						"adminPassword" : {
-							"value" : "[parameters('adminPassword')]"
-						},
-						"sharePointSetupUserAccountPassword" : {
-							"value" : "[parameters('sharePointSetupUserAccountPassword')]"
-						},
-						"sharePointFarmAccountPassword" : {
-							"value" : "[parameters('sharePointFarmAccountPassword')]"
-						},
-						"sharePointFarmPassphrasePassword" : {
-							"value" : "[parameters('sharePointFarmPassphrasePassword')]"
+						  "value" : "[variables('sqlVMName')]"
 						},
 						"fqdn" : {
-				    	"value" : "[reference('SettingUpSharepointIP').outputs.fqdn.value]"
-				    }
+						  "value" : "[reference('SettingUpSharepointIP').outputs.fqdn.value]"
+						},
+						"contentDatabaseName" : {
+						  "value" : "[variables('contentDatabaseName')]"
+						},
+						"spSiteTemplateName" : {
+						  "value" : "[parameters('spSiteTemplateName')]"
+						},
+						"adminPassword" : {
+						  "value" : "[parameters('adminPassword')]"
+						},
+						"sharePointSetupUserAccountPassword" : {
+						  "value" : "[parameters('sharePointSetupUserAccountPassword')]"
+						},
+						"sharePointFarmAccountPassword" : {
+						  "value" : "[parameters('sharePointFarmAccountPassword')]"
+						},
+						"sharePointFarmPassphrasePassword" : {
+						  "value" : "[parameters('sharePointFarmPassphrasePassword')]"
+						},
+						"spVMSize" : {
+						  "value" : "[parameters('spVMSize')]"
+						},
+						"spAvailabilitySetName" : {
+						  "value" : "[variables('spAvailabilitySetName')]"
+						},
+						"spNicName" : {
+						  "value" : "[variables('spNicName')]"
+						}
 					}
 				}
 		}
