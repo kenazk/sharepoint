@@ -369,7 +369,7 @@
 		"setupLBsUrl" : "[concat(parameters('baseUrl'),'/loadBalancers.json')]",
 		"creatingNICSUrl" : "[concat(parameters('baseUrl'),'/creatingNICS.json')]",
 		"ProvisioningADDomainControllerUrl" : "[concat(parameters('baseUrl'),'/provisioningDomainController.json')]",
-		"ProvisioningSQL" : "[concat(parameters('baseUrl'),'/provisioningSQL.json')]"
+		"ProvisioningSQLUrl" : "[concat(parameters('baseUrl'),'/provisioningSQL.json')]"
 	},
 	"resources": [
 		{
@@ -726,7 +726,7 @@
 			"properties": {
 				"mode": "Incremental",
 				"templateLink": {
-					"uri": "[variables('vnetwithDNSTemplateUrl')]",
+					"uri": "[variables('ProvisioningSQLUrl')]",
 					"contentVersion": "1.0.0.0"
 				},
 				"parameters": {
@@ -794,7 +794,7 @@
 				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
 				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
 				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM",
-				"[concat('Microsoft.Compute/virtualMachines/', variables('sqlVMName'),'/extensions/CreateSQLServer')]"
+				"Microsoft.Resources/deployments/ProvisioningSQLServer"
 			],
 			"properties": {
 				"hardwareProfile": {
