@@ -1,10 +1,9 @@
-﻿#Select-AzureSubscription -SubscriptionId fad86a17-58a6-43ac-b04b-75d932847cbe -Current
-Select-AzureSubscription -SubscriptionId 85182b66-6daa-40c6-bfa8-42dcc6d6845e -Current
+﻿Select-AzureSubscription -SubscriptionId 85182b66-6daa-40c6-bfa8-42dcc6d6845e -Current
 
 Switch-AzureMode -name AzureResourceManager
 
 #######################################
-###         HA SHAREPOINT           ###
+###         NONHA SHAREPOINT        ###
 #######################################
 
 # Count of runs
@@ -35,15 +34,13 @@ for($i = 0; $i -lt $count; $i++)
     
     # Construct parameter set
     $dsuffix = "" + $d.hour + $d.minute + $d.Second
-    $hash.dnsPrefix = "spha" + $dsuffix
-    $hash.spCADNSPrefix = "spha" + $dsuffix + "ca"
-    $hash.storageAccountNamePrefix = "storage" + $dsuffix
+    $hash.spDNSPrefix = "nha" + $dsuffix
+    $hash.storageAccountName = "storage" + $dsuffix
     $hash.location = $location
 
     if ($premium)
     {
         $hash.StorageAccountType = "Premium_LRS"
-        $hash.witnessVMSize = "Standard_DS1"
         $hash.spVMSize = "Standard_DS3"
         $hash.sqlVMSize = "Standard_DS3"
         $hash.adVMSize = "Standard_DS1"
@@ -51,7 +48,6 @@ for($i = 0; $i -lt $count; $i++)
     else
     {
         $hash.StorageAccountType = "Standard_LRS"
-        $hash.witnessVMSize = "Standard_D1"
         $hash.spVMSize = "Standard_D3"
         $hash.sqlVMSize = "Standard_D3"
         $hash.adVMSize = "Standard_D1"

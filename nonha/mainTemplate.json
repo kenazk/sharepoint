@@ -409,13 +409,13 @@
 			      "value": "[parameters('location')]"
 			    },
 			    "adpublicIPAddressName" : {
-			      "type" : "[variables('adpublicIPAddressName')]"
+			      "value" : "[variables('adpublicIPAddressName')]"
 			    },
 			    "sqlpublicIPAddressName" : {
-			      "type" : "[variables('sqlpublicIPAddressName')]"
+			      "value" : "[variables('sqlpublicIPAddressName')]"
 			    },
 			    "publicIPAddressType" : {
-			      "type" : "[variables('publicIPAddressType')]"
+			      "value" : "[variables('publicIPAddressType')]"
 			    }
 				}
 			}
