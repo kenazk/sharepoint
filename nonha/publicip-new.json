@@ -34,7 +34,7 @@
   ],
   "outputs": {
     "publicIpId": {
-      "value": "[resourceId(parameters('publicIpRGName'),concat('Microsoft.Network','/','publicIPAddresses'),parameters('publicIPAddressName'))]",
+      "value": "[resourceId(concat('Microsoft.Network','/','publicIPAddresses'),parameters('publicIPAddressName'))]",
       "type" : "string"
     },
     "fqdn" : {
