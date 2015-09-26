@@ -369,6 +369,7 @@
 		"setupLBsUrl" : "[concat(parameters('baseUrl'),'/loadBalancers.json')]",
 		"creatingNICSUrl" : "[concat(parameters('baseUrl'),'/creatingNICS.json')]",
 		"ProvisioningADDomainControllerUrl" : "[concat(parameters('baseUrl'),'/provisioningDomainController.json')]",
+		"ProvisioningSQL" : "[concat(parameters('baseUrl'),'/provisioningSQL.json')]"
 	},
 	"resources": [
 		{
@@ -623,60 +624,60 @@
          }
     },
 		{
-         "name":"ProvisioningADDomainController",
-         "type":"Microsoft.Resources/deployments",
-         "apiVersion":"2015-01-01",
-         "dependsOn":[
-					 "Microsoft.Resources/deployments/SettingUpStorageAccount",
-					 "Microsoft.Resources/deployments/CreatingNetworkInterfaces",
-					 "Microsoft.Resources/deployments/CreatingAvailabilitySets",
-					 "Microsoft.Resources/deployments/SettingUpLoadBalancers"
-         ],
-         "properties":{
-            "mode":"Incremental",
-            "templateLink":{
-               "uri":"[variables('ProvisioningADDomainControllerUrl')]",
-               "contentVersion":"1.0.0.0"
-            },
-            "parameters":{
-							"location": {
-							  "value": "[parameters('location')]"
-							},
-							"adVMName": {
-							  "value": "[variables('adVMName')]"
-							},
-							"adVMSize": {
-							  "value": "[parameters('adVMSize')]"
-							},
-							"adAvailabilitySetName": {
-							  "value": "[variables('adAvailabilitySetName')]"
-							},
-							"adminUsername": {
-							  "value": "[parameters('adminUsername')]"
-							},
-							"adminPassword": {
-							  "value": "[parameters('adminPassword')]"
-							},
-							"storageAccountName": {
-							  "value": "[parameters('storageAccountName')]"
-							},
-							"adDataDisk": {
-							  "value": "[variables('adDataDisk')]"
-							},
-							"adNicName": {
-							  "value": "[variables('adNicName')]"
-							},
-							"adModulesURL": {
-							  "value": "[variables('adModulesURL')]"
-							},
-							"adConfigurationFunction": {
-							  "value": "[variables('adConfigurationFunction')]"
-							},
-							"domainName": {
-							  "value": "[parameters('domainName')]"
-							}
-            }
-         }
+       "name":"ProvisioningADDomainController",
+       "type":"Microsoft.Resources/deployments",
+       "apiVersion":"2015-01-01",
+       "dependsOn":[
+				 "Microsoft.Resources/deployments/SettingUpStorageAccount",
+				 "Microsoft.Resources/deployments/CreatingNetworkInterfaces",
+				 "Microsoft.Resources/deployments/CreatingAvailabilitySets",
+				 "Microsoft.Resources/deployments/SettingUpLoadBalancers"
+       ],
+       "properties":{
+          "mode":"Incremental",
+          "templateLink":{
+             "uri":"[variables('ProvisioningADDomainControllerUrl')]",
+             "contentVersion":"1.0.0.0"
+          },
+          "parameters":{
+						"location": {
+						  "value": "[parameters('location')]"
+						},
+						"adVMName": {
+						  "value": "[variables('adVMName')]"
+						},
+						"adVMSize": {
+						  "value": "[parameters('adVMSize')]"
+						},
+						"adAvailabilitySetName": {
+						  "value": "[variables('adAvailabilitySetName')]"
+						},
+						"adminUsername": {
+						  "value": "[parameters('adminUsername')]"
+						},
+						"adminPassword": {
+						  "value": "[parameters('adminPassword')]"
+						},
+						"storageAccountName": {
+						  "value": "[parameters('storageAccountName')]"
+						},
+						"adDataDisk": {
+						  "value": "[variables('adDataDisk')]"
+						},
+						"adNicName": {
+						  "value": "[variables('adNicName')]"
+						},
+						"adModulesURL": {
+						  "value": "[variables('adModulesURL')]"
+						},
+						"adConfigurationFunction": {
+						  "value": "[variables('adConfigurationFunction')]"
+						},
+						"domainName": {
+						  "value": "[parameters('domainName')]"
+						}
+          }
+       }
     },
 		{
 			"name": "UpdatingDNStoPrimaryADVM",
@@ -713,10 +714,9 @@
 			}
 		},
 		{
-			"apiVersion": "2015-06-15",
-			"type": "Microsoft.Compute/virtualMachines",
-			"name": "[variables('sqlVMName')]",
-			"location": "[parameters('location')]",
+			"name": "ProvisioningSQLServer",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2015-01-01",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/SettingUpStorageAccount",
 				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
@@ -724,101 +724,62 @@
 				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM"
 			],
 			"properties": {
-				"hardwareProfile": {
-					"vmSize": "[parameters('sqlVMSize')]"
+				"mode": "Incremental",
+				"templateLink": {
+					"uri": "[variables('vnetwithDNSTemplateUrl')]",
+					"contentVersion": "1.0.0.0"
 				},
-				"availabilitySet": {
-					"id": "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
-				},
-				"osProfile": {
-					"computername": "[variables('sqlVMName')]",
-					"adminUsername": "[parameters('adminUsername')]",
-					"adminPassword": "[parameters('adminPassword')]"
-				},
-				"storageProfile": {
-					"imageReference": {
-						"publisher": "MicrosoftSQLServer",
-						"offer": "SQL2014-WS2012R2",
-						"sku": "Enterprise",
-						"version": "latest"
+				"parameters": {
+					"location": {
+					  "value": "[parameters('location')]"
 					},
-					"osDisk": {
-						"name": "osdisk",
-						"vhd": {
-							"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/',variables('sqlVMName'),'-osdisk.vhd')]"
-						},
-						"caching": "ReadWrite",
-						"createOption": "FromImage"
+					"sqlVMName": {
+					  "value": "[variables('sqlVMName')]"
 					},
-					"dataDisks": [
-						{
-							"vhd": {
-								"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/', variables('sqlDataDisk'), '-1.vhd')]"
-							},
-							"name": "[concat(variables('sqlVMName'),'-data-disk1')]",
-							"createOption": "empty",
-							"caching": "None",
-							"diskSizeGB": "[variables('sqlDataDiskSize')]",
-							"lun": 0
-						},
-						{
-							"vhd": {
-								"uri": "[concat('http://',parameters('storageAccountName'),'.blob.core.windows.net/vhds/', variables('sqlLogDisk'), '-1.vhd')]"
-							},
-							"name": "[concat(variables('sqlVMName'),'-log-disk1')]",
-							"createOption": "empty",
-							"caching": "None",
-							"diskSizeGB": "[variables('sqlLogDiskSize')]",
-							"lun": 1
-						}
-					]
-				},
-				"networkProfile": {
-					"networkInterfaces": [
-						{
-							"id": "[resourceId('Microsoft.Network/networkInterfaces',variables('sqlNicName'))]"
-						}
-					]
-				}
-			}
-		},
-		{
-			"type": "Microsoft.Compute/virtualMachines/extensions",
-			"name": "[concat(variables('sqlVMName'),'/CreateSQLServer')]",
-			"apiVersion": "2015-06-15",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"[concat('Microsoft.Compute/virtualMachines/', variables('sqlVMName'))]",
-				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM"
-			],
-			"properties": {
-				"publisher": "Microsoft.Powershell",
-				"type": "DSC",
-				"typeHandlerVersion": "2.6",
-				"settings": {
-					"ModulesUrl": "[variables('sqlModulesURL')]",
-					"ConfigurationFunction": "[variables('sqlConfigurationFunction')]",
-					"Properties": {
-						"DomainName": "[parameters('domainName')]",
-						"AdminCreds": {
-							"UserName": "[parameters('adminUserName')]",
-							"Password": "PrivateSettingsRef:AdminPassword"
-						},
-						"SqlServerServiceAccountcreds": {
-							"UserName": "[parameters('sqlServerServiceAccountUserName')]",
-							"Password": "PrivateSettingsRef:SqlServerServiceAccountPassword"
-						},
-						"SharePointSetupUserAccountcreds": {
-							"UserName": "[parameters('sharePointSetupUserAccountUserName')]",
-							"Password": "PrivateSettingsRef:SharePointSetupUserAccountPassword"
-						}
-					}
-				},
-				"protectedSettings": {
-					"Items": {
-						"AdminPassword": "[parameters('adminPassword')]",
-						"SqlServerServiceAccountPassword": "[parameters('sqlServerServiceAccountPassword')]",
-						"SharePointSetupUserAccountPassword": "[parameters('sharePointSetupUserAccountPassword')]"
+					"sqlVMSize": {
+					  "value": "[parameters('sqlVMSize')]"
+					},
+					"sqlAvailabilitySetName": {
+					  "value": "[variables('sqlAvailabilitySetName')]"
+					},
+					"adminUsername": {
+					  "value": "[parameters('adminUsername')]"
+					},
+					"adminPassword": {
+					  "value": "[parameters('adminPassword')]"
+					},
+					"storageAccountName": {
+					  "value": "[parameters('storageAccountName')]"
+					},
+					"sqlDataDisk": {
+					  "value": "[variables('sqlDataDisk')]"
+					},
+					"sqlLogDisk": {
+					  "value": "[variables('sqlLogDisk')]"
+					},
+					"sqlNicName": {
+					  "value": "[variables('sqlNicName')]"
+					},
+					"sqlModulesURL": {
+					  "value": "[variables('sqlModulesURL')]"
+					},
+					"sqlConfigurationFunction": {
+					  "value": "[variables('sqlConfigurationFunction')]"
+					},
+					"domainName": {
+					  "value": "[parameters('domainName')]"
+					},
+					"sqlServerServiceAccountUserName": {
+					  "value": "[parameters('sqlServerServiceAccountUserName')]"
+					},
+					"sharePointSetupUserAccountUserName": {
+					  "value": "[parameters('sharePointSetupUserAccountUserName')]"
+					},
+					"sqlServerServiceAccountPassword": {
+					  "value": "[parameters('sqlServerServiceAccountPassword')]"
+					},
+					"sharePointSetupUserAccountPassword": {
+					  "value": "[parameters('sharePointSetupUserAccountPassword')]"
 					}
 				}
 			}
