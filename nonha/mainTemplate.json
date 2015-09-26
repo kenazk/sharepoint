@@ -718,9 +718,6 @@
 			"type": "Microsoft.Resources/deployments",
 			"apiVersion": "2015-01-01",
 			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpStorageAccount",
-				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
-				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
 				"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM"
 			],
 			"properties": {
@@ -789,12 +786,7 @@
 				"type": "Microsoft.Resources/deployments",
 				"apiVersion": "2015-01-01",
 				"dependsOn": [
-					"Microsoft.Resources/deployments/SettingUpStorageAccount",
-					"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
-					"Microsoft.Resources/deployments/CreatingAvailabilitySets",
-					"Microsoft.Resources/deployments/UpdatingDNStoPrimaryADVM",
-					"Microsoft.Resources/deployments/ProvisioningSQLServer",
-					"Microsoft.Resources/deployments/SettingUpSharepointIP"
+					"Microsoft.Resources/deployments/ProvisioningSQLServer"
 				],
 				"properties": {
 					"mode": "Incremental",
