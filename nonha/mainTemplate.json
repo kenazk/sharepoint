@@ -366,7 +366,8 @@
 		"vnetwithDNSTemplateUrl": "[concat(parameters('baseUrl'),'/vnet-with-dns-server.json')]",
 		"CreatingAvailabilitySetsUrl":"[concat(parameters('baseUrl'),'/availabilitySets.json')]",
 		"vnetSetupURL" : "[concat(parameters('baseUrl'),'/vnet-new.json')]",
-		"setupLBsUrl" : "[concat(parameters('baseUrl'),'/loadBalancers.json')]"
+		"setupLBsUrl" : "[concat(parameters('baseUrl'),'/loadBalancers.json')]",
+		"creatingNICSUrl" : "[concat(parameters('baseUrl'),'/creatingNICS.json')]"
 	},
 	"resources": [
 		{
@@ -500,7 +501,7 @@
 				      "value": "[parameters('spPublicIPRGName')]"
 				    }
 	        }
-	      }
+      	}
     },
 		{
          "name":"SettingUpLoadBalancers",
@@ -554,109 +555,72 @@
          }
     },
 		{
-			"name": "[variables('adNicName')]",
-			"type": "Microsoft.Network/networkInterfaces",
-			"location": "[parameters('location')]",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpVirtualNetwork",
-				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
-			],
-			"apiVersion": "2015-06-15",
-			"properties": {
-				"ipConfigurations": [
-					{
-						"name": "ipconfig1",
-						"properties": {
-							"privateIPAllocationMethod": "Static",
-							"privateIPAddress": "[parameters('adNicIPAddress')]",
-							"subnet": {
-								"id": "[variables('adSubnetRef')]"
+         "name":"CreatingNetworkInterfaces",
+         "type":"Microsoft.Resources/deployments",
+         "apiVersion":"2015-01-01",
+         "dependsOn":[
+            "Microsoft.Resources/deployments/SettingUpVirtualNetwork",
+            "Microsoft.Resources/deployments/SettingUpLoadBalancers",
+						"Microsoft.Resources/deployments/SettingUpVirtualNetwork"
+         ],
+         "properties":{
+            "mode":"Incremental",
+            "templateLink":{
+               "uri":"[variables('creatingNICSUrl')]",
+               "contentVersion":"1.0.0.0"
+            },
+            "parameters":{
+							"location": {
+							  "value": "[parameters('location')]"
 							},
-							"loadBalancerBackendAddressPools": [
-								{
-									"id": "[variables('adBEAddressPoolID')]"
-								}
-							],
-							"loadBalancerInboundNatRules": [
-								{
-									"id": "[variables('adRDPNATRuleID')]"
-								}
-							]
-						}
-					}
-				]
-			}
-		},
-		{
-			"name": "[variables('sqlNicName')]",
-			"type": "Microsoft.Network/networkInterfaces",
-			"location": "[parameters('location')]",
-			"apiVersion": "2015-06-15",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpVirtualNetwork",
-				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
-			],
-			"properties": {
-				"ipConfigurations": [
-					{
-						"name": "ipconfig1",
-						"properties": {
-							"privateIPAllocationMethod": "Dynamic",
-							"subnet": {
-								"id": "[variables('sqlSubnetRef')]"
+							"adNicName": {
+							  "value": "[variables('adNicName')]"
 							},
-							"loadBalancerBackendAddressPools": [
-								{
-									"id": "[variables('sqlBEAddressPoolID')]"
-								}
-							],
-							"loadBalancerInboundNatRules": [
-								{
-									"id": "[variables('sqlRDPNATRuleID')]"
-								}
-							]
-						}
-					}
-				]
-			}
-		},
-		{
-			"name": "[variables('spNicName')]",
-			"type": "Microsoft.Network/networkInterfaces",
-			"location": "[parameters('location')]",
-			"apiVersion": "2015-06-15",
-			"dependsOn": [
-				"Microsoft.Resources/deployments/SettingUpVirtualNetwork",
-				"Microsoft.Resources/deployments/SettingUpSharepointIP",
-				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
-			],
-			"properties": {
-				"ipConfigurations": [
-					{
-						"name": "ipconfig1",
-						"properties": {
-							"privateIPAllocationMethod": "Dynamic",
-							"subnet": {
-								"id": "[variables('spSubnetRef')]"
+							"adNicIPAddress": {
+							  "value": "[parameters('adNicIPAddress')]"
 							},
-							"loadBalancerBackendAddressPools": [
-								{
-									"id": "[concat(reference('SettingUpLoadBalancers').outputs.splbID.value,'/backendAddressPools/',variables('LBBE'))]"
-								}
-							],
-							"loadBalancerInboundNatRules": [
-								{
-									"id": "[concat(reference('SettingUpLoadBalancers').outputs.splbID.value,'/inboundNatRules/',variables('RDPNAT'))]"
-								},
-								{
-									"id": "[concat(reference('SettingUpLoadBalancers').outputs.splbID.value,'/inboundNatRules/',variables('spWebNAT'))]"
-								}
-							]
-						}
-					}
-				]
-			}
-		},
+							"adSubnetRef": {
+							  "value": "[variables('adSubnetRef')]"
+							},
+							"adBEAddressPoolID": {
+							  "value": "[variables('adBEAddressPoolID')]"
+							},
+							"adRDPNATRuleID": {
+							  "value": "[variables('adRDPNATRuleID')]"
+							},
+							"sqlNicName": {
+							  "value": "[variables('sqlNicName')]"
+							},
+							"sqlSubnetRef": {
+							  "value": "[variables('sqlSubnetRef')]"
+							},
+							"sqlBEAddressPoolID": {
+							  "value": "[variables('sqlBEAddressPoolID')]"
+							},
+							"sqlRDPNATRuleID": {
+							  "value": "[variables('sqlRDPNATRuleID')]"
+							},
+							"spNicName": {
+							  "value": "[variables('spNicName')]"
+							},
+							"spSubnetRef": {
+							  "value": "[variables('spSubnetRef')]"
+							},
+							"splbResourceId": {
+							  "value": "[reference('SettingUpLoadBalancers').outputs.splbID.value]"
+							},
+							"LBBE": {
+							  "value": "[variables('LBBE')]"
+							},
+							"RDPNAT": {
+							  "value": "[variables('RDPNAT')]"
+							},
+							"spWebNAT": {
+							  "value": "[variables('spWebNAT')]"
+							}
+            }
+         }
+    },
 		{
 			"apiVersion": "2015-06-15",
 			"type": "Microsoft.Compute/virtualMachines",
@@ -664,7 +628,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/SettingUpStorageAccount",
-				"[resourceId('Microsoft.Network/networkInterfaces',variables('adNicName'))]",
+				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
 				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
 				"Microsoft.Resources/deployments/SettingUpLoadBalancers"
 			],
@@ -790,7 +754,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/SettingUpStorageAccount",
-				"[resourceId('Microsoft.Network/networkInterfaces',variables('sqlNicName'))]",
+				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
 				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
 				"Microsoft.Resources/deployments/UpdateVNetDNS"
 			],
@@ -901,7 +865,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"Microsoft.Resources/deployments/SettingUpStorageAccount",
-				"[resourceId('Microsoft.Network/networkInterfaces',variables('spNicName'))]",
+				"Microsoft.Resources/deployments/CreatingNetworkInterfaces",
 				"Microsoft.Resources/deployments/CreatingAvailabilitySets",
 				"Microsoft.Resources/deployments/UpdateVNetDNS",
 				"[concat('Microsoft.Compute/virtualMachines/', variables('sqlVMName'),'/extensions/CreateSQLServer')]"
