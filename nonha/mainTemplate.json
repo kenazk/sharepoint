@@ -857,7 +857,10 @@
 						},
 						"spNicName" : {
 						  "value" : "[variables('spNicName')]"
-						}
+						},
+						"spDataDisk" : {
+				      "value" : "[variables('spDataDisk')]"
+				    }
 					}
 				}
 		}

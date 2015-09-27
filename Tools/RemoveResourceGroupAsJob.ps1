@@ -1,11 +1,10 @@
-﻿#select-AzureSubscription -subscriptionid 85182b66-6daa-40c6-bfa8-42dcc6d6845e
-select-AzureSubscription -subscriptionid fad86a17-58a6-43ac-b04b-75d932847cbe
+﻿select-AzureSubscription -subscriptionid 85182b66-6daa-40c6-bfa8-42dcc6d6845e
 
 
 switch-azuremode -name AzureResourceManager
 
 $location = "*"
-$rgPrefix = "w*"
+$rgPrefix = "NHA*"
 
 $c = get-content C:\daily\2015-8-28\rgs.txt
 
