@@ -860,7 +860,10 @@
 						},
 						"spDataDisk" : {
 				      "value" : "[variables('spDataDisk')]"
-				    }
+				    },
+						"storageAccountName" : {
+							"value" : "[parameters('storageAccountName')]"
+						}
 					}
 				}
 		}

@@ -7,14 +7,14 @@ Switch-AzureMode -name AzureResourceManager
 #######################################
 
 # Count of runs
-$count = 1
+$count = 3
 
 # Variables
 $templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\mainTemplate.json"
 $paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\parameters.json"
 $params = Get-content $paramsFile | convertfrom-json
 $location = "westus"
-$rgprefix = "NHA8"
+$rgprefix = "NHA9"
 $premium = $true
 
 # Generate parameter object
