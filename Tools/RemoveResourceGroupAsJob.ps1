@@ -4,7 +4,7 @@
 switch-azuremode -name AzureResourceManager
 
 $location = "*"
-$rgPrefix = "NHA*"
+$rgPrefix = "NHA10*"
 
 $c = get-content C:\daily\2015-8-28\rgs.txt
 

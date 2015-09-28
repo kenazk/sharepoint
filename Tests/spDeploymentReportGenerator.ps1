@@ -1,6 +1,6 @@
 ﻿Switch-AzureMode -name AzureResourceManager
 #Get all AzureResourceGroups 
-$groups = Get-AzureResourceGroup | where {$_.ResourceGroupName -like "*"} | where { $_.Location -like "*" }
+$groups = Get-AzureResourceGroup | where {$_.ResourceGroupName -like "NHA10*"} | where { $_.Location -like "*" }
 
 $obj = @();
 $obj2 = @();
