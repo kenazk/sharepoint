@@ -863,6 +863,9 @@
 				    },
 						"storageAccountName" : {
 							"value" : "[parameters('storageAccountName')]"
+						},
+						"sharepointFarmName" : {
+							"value" : "[parameters('sharepointFarmName')]"
 						}
 					}
 				}

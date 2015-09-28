@@ -82,6 +82,18 @@
                 "backendPort": 80,
                 "enableFloatingIP": false
               }
+            },
+            {
+              "name": "spCentralAdmin",
+              "properties": {
+                "frontendIPConfiguration": {
+                  "id": "[concat(resourceid(resourceGroup().name,'Microsoft.Network/loadBalancers',parameters('spLBName')), '/frontendIPConfigurations/',parameters('LBFE'))]"
+                },
+                "protocol": "tcp",
+                "frontendPort": 8080,
+                "backendPort": 8080,
+                "enableFloatingIP": false
+              }
             }
           ]
         }
