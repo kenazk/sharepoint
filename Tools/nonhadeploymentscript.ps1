@@ -1,19 +1,20 @@
-﻿Switch-AzureMode -name AzureResourceManager
+﻿Select-AzureSubscription -SubscriptionId 85182b66-6daa-40c6-bfa8-42dcc6d6845e -Current
+
+Switch-AzureMode -name AzureResourceManager
 
 #######################################
-###       NON HA SHAREPOINT         ###
+###         NONHA SHAREPOINT        ###
 #######################################
 
 # Count of runs
-$count = 1
+$count = 5
 
 # Variables
-#$templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\mainTemplate.json"
-$templateFile = "C:\daily\2015-9-22\mainTemplate.json"
+$templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\mainTemplate.json"
 $paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\parameters.json"
 $params = Get-content $paramsFile | convertfrom-json
-$location = "westus"
-$rgprefix = "NHA1"
+$location = "westeurope"
+$rgprefix = "NHA12"
 $premium = $true
 
 # Generate parameter object
@@ -27,16 +28,15 @@ foreach($param in $params.psobject.Properties)
 for($i = 0; $i -lt $count; $i++)
 {
     # Create new Resource Group
-    $d = get-date 
+    $d = get-date
     $rgname = $rgprefix + '-'+ $d.Year + $d.Month + $d.Day + '-' + $d.Hour + $d.Minute + $d.Second
     New-AzureResourceGroup -Name $rgname -Location $location -Verbose 
     
     # Construct parameter set
     $dsuffix = "" + $d.hour + $d.minute + $d.Second
-    $hash.spDnsPrefix = "spnonha" + $dsuffix
-    $hash.storageAccountName = "sa" + $dsuffix
+    $hash.spDNSPrefix = "nha" + $dsuffix
+    $hash.storageAccountName = "storage" + $dsuffix
     $hash.location = $location
-    $hash.adminUsername = "admin123"
 
     if ($premium)
     {
@@ -52,8 +52,10 @@ for($i = 0; $i -lt $count; $i++)
         $hash.sqlVMSize = "Standard_D3"
         $hash.adVMSize = "Standard_D1"
     }
-
+  
     # Run as asynchronous job
+
+    $hash | ft
     $jobName = "spDeployment-" + $i;
     $sb = {
         param($rgname, $templateFile, $hash)

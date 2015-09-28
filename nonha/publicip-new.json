@@ -6,13 +6,13 @@
       "type": "string"
     },
     "publicIpAddressName": {
-      "type" : "string"
+      "type": "string"
     },
-    "publicIPAddressType" : {
-      "type" : "string"
+    "publicIPAddressType": {
+      "type": "string"
     },
-    "dnsPrefix" : {
-      "type" : "string"
+    "dnsPrefix": {
+      "type": "string"
     },
     "publicIpRGName": {
       "type": "string"
@@ -35,11 +35,11 @@
   "outputs": {
     "publicIpId": {
       "value": "[resourceId(concat('Microsoft.Network','/','publicIPAddresses'),parameters('publicIPAddressName'))]",
-      "type" : "string"
+      "type": "string"
     },
-    "fqdn" : {
+    "fqdn": {
       "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIpAddressName')),providers('Microsoft.Network', 'publicIPAddresses').apiVersions[0]).dnsSettings.fqdn]",
-      "type" : "string"
+      "type": "string"
     }
   }
 }

@@ -53,97 +53,96 @@
   },
   "resources": [
     {
-			"name": "[parameters('adNicName')]",
-			"type": "Microsoft.Network/networkInterfaces",
-			"location": "[parameters('location')]",
-			"apiVersion": "2015-06-15",
-			"properties": {
-				"ipConfigurations": [
-					{
-						"name": "ipconfig1",
-						"properties": {
-							"privateIPAllocationMethod": "Static",
-							"privateIPAddress": "[parameters('adNicIPAddress')]",
-							"subnet": {
-								"id": "[parameters('adSubnetRef')]"
-							},
-							"loadBalancerBackendAddressPools": [
-								{
-									"id": "[parameters('adBEAddressPoolID')]"
-								}
-							],
-							"loadBalancerInboundNatRules": [
-								{
-									"id": "[parameters('adRDPNATRuleID')]"
-								}
-							]
-						}
-					}
-				]
-			}
-		},
-		{
-			"name": "[parameters('sqlNicName')]",
-			"type": "Microsoft.Network/networkInterfaces",
-			"location": "[parameters('location')]",
-			"apiVersion": "2015-06-15",
-			"properties": {
-				"ipConfigurations": [
-					{
-						"name": "ipconfig1",
-						"properties": {
-							"privateIPAllocationMethod": "Dynamic",
-							"subnet": {
-								"id": "[parameters('sqlSubnetRef')]"
-							},
-							"loadBalancerBackendAddressPools": [
-								{
-									"id": "[parameters('sqlBEAddressPoolID')]"
-								}
-							],
-							"loadBalancerInboundNatRules": [
-								{
-									"id": "[parameters('sqlRDPNATRuleID')]"
-								}
-							]
-						}
-					}
-				]
-			}
-		},
-		{
-			"name": "[parameters('spNicName')]",
-			"type": "Microsoft.Network/networkInterfaces",
-			"location": "[parameters('location')]",
-			"apiVersion": "2015-06-15",
-			"properties": {
-				"ipConfigurations": [
-					{
-						"name": "ipconfig1",
-						"properties": {
-							"privateIPAllocationMethod": "Dynamic",
-							"subnet": {
-								"id": "[parameters('spSubnetRef')]"
-							},
-							"loadBalancerBackendAddressPools": [
-								{
-									"id": "[concat(parameters('splbResourceId'),'/backendAddressPools/',parameters('LBBE'))]"
-								}
-							],
-							"loadBalancerInboundNatRules": [
-								{
-									"id": "[concat(parameters('splbResourceId'),'/inboundNatRules/',parameters('RDPNAT'))]"
-								},
-								{
-									"id": "[concat(parameters('splbResourceId'),'/inboundNatRules/',parameters('spWebNAT'))]"
-								}
-							]
-						}
-					}
-				]
-			}
-		}
+      "name": "[parameters('adNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[parameters('adNicIPAddress')]",
+              "subnet": {
+                "id": "[parameters('adSubnetRef')]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[parameters('adBEAddressPoolID')]"
+                }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[parameters('adRDPNATRuleID')]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('sqlNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[parameters('sqlSubnetRef')]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[parameters('sqlBEAddressPoolID')]"
+                }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[parameters('sqlRDPNATRuleID')]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('spNicName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-06-15",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[parameters('spSubnetRef')]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[concat(parameters('splbResourceId'),'/backendAddressPools/',parameters('LBBE'))]"
+                }
+              ],
+              "loadBalancerInboundNatRules": [
+                {
+                  "id": "[concat(parameters('splbResourceId'),'/inboundNatRules/',parameters('RDPNAT'))]"
+                },
+                {
+                  "id": "[concat(parameters('splbResourceId'),'/inboundNatRules/',parameters('spWebNAT'))]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   ],
-  "outputs": {
-  }
+  "outputs": {}
 }

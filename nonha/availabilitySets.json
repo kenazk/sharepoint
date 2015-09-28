@@ -16,24 +16,24 @@
     }
   },
   "resources": [
-      {
-        "type": "Microsoft.Compute/availabilitySets",
-        "name": "[parameters('adAvailabilitySetName')]",
-        "apiVersion": "2015-06-15",
-        "location": "[parameters('location')]"
-      },
-      {
-        "type": "Microsoft.Compute/availabilitySets",
-        "name": "[parameters('spAvailabilitySetName')]",
-        "apiVersion": "2015-06-15",
-        "location": "[parameters('location')]"
-      },
-      {
-        "type": "Microsoft.Compute/availabilitySets",
-        "name": "[parameters('sqlAvailabilitySetName')]",
-        "apiVersion": "2015-06-15",
-        "location": "[parameters('location')]"
-      }
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[parameters('adAvailabilitySetName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[parameters('spAvailabilitySetName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[parameters('sqlAvailabilitySetName')]",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]"
+    }
   ],
   "outputs": {}
 }

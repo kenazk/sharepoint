@@ -5,35 +5,35 @@
     "location": {
       "type": "string"
     },
-    "adpublicIPAddressName" : {
-      "type" : "string"
+    "adpublicIPAddressName": {
+      "type": "string"
     },
-    "sqlpublicIPAddressName" : {
-      "type" : "string"
+    "sqlpublicIPAddressName": {
+      "type": "string"
     },
-    "publicIPAddressType" : {
-      "type" : "string"
+    "publicIPAddressType": {
+      "type": "string"
     }
   },
   "resources": [
-  {
-    "apiVersion": "2015-06-15",
-    "type": "Microsoft.Network/publicIPAddresses",
-    "name": "[parameters('adpublicIPAddressName')]",
-    "location": "[parameters('location')]",
-    "properties": {
-      "publicIPAllocationMethod": "[parameters('publicIPAddressType')]"
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[parameters('adpublicIPAddressName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "[parameters('publicIPAddressType')]"
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[parameters('sqlpublicIPAddressName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "publicIPAllocationMethod": "[parameters('publicIPAddressType')]"
+      }
     }
-  },
-  {
-    "apiVersion": "2015-06-15",
-    "type": "Microsoft.Network/publicIPAddresses",
-    "name": "[parameters('sqlpublicIPAddressName')]",
-    "location": "[parameters('location')]",
-    "properties": {
-      "publicIPAllocationMethod": "[parameters('publicIPAddressType')]"
-    }
-  }
   ],
   "outputs": {
     "adPublicIpResourceId": {
