@@ -7,14 +7,14 @@ Switch-AzureMode -name AzureResourceManager
 #######################################
 
 # Count of runs
-$count = 5
+$count = 3
 
 # Variables
-$templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\mainTemplate.json"
-$paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\parameters.json"
+$templateFile = "C:\Users\kenazk\Desktop\GitHub\azure-quickstart-templates\sharepoint-three-vm\azuredeploy.json"
+$paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\azuredeploy.parameters.json"
 $params = Get-content $paramsFile | convertfrom-json
-$location = "westeurope"
-$rgprefix = "NHA12"
+$location = "southeastasia"
+$rgprefix = "NHAF"
 $premium = $true
 
 # Generate parameter object

@@ -167,10 +167,30 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": "true",
-	 		 		  "storageUri": "[concat('http://',parameters('storageAccountNamePrefix'),'diag.blob.core.windows.net')]"
+            "storageUri": "[concat('http://',parameters('storageAccountNamePrefix'),'diag.blob.core.windows.net')]"
           }
         }
-      }
+      },
+      "resources" :[
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(parameters('sqlwVMName'),'/PrepareDscExtension')]",
+          "apiVersion": "2015-06-15",
+          "location": "[parameters('location')]",
+          "dependsOn":[
+            "[resourceId('Microsoft.Compute/virtualMachines', parameters('sqlwVMName'))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.6",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "wmfVersion" : "5.0"
+            }
+          }
+        }
+      ]
     },
     {
       "apiVersion": "2015-06-15",
@@ -241,10 +261,30 @@
         "diagnosticsProfile": {
           "bootDiagnostics": {
             "enabled": "true",
-	 		 		  "storageUri": "[concat('http://',parameters('storageAccountNamePrefix'),'diag.blob.core.windows.net')]"
+            "storageUri": "[concat('http://',parameters('storageAccountNamePrefix'),'diag.blob.core.windows.net')]"
           }
         }
-      }
+      },
+      "resources" :[
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(parameters('sqlVMName'), copyindex(),'/PrepareDscExtension')]",
+          "apiVersion": "2015-06-15",
+          "location": "[parameters('location')]",
+          "dependsOn":[
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('sqlVMName'), copyindex()))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.6",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "wmfVersion" : "5.0"
+            }
+          }
+        }
+      ]
     }
   ],
   "outputs": {}
