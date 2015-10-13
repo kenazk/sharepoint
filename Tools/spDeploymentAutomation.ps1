@@ -1,5 +1,4 @@
-﻿#Select-AzureSubscription -SubscriptionId fad86a17-58a6-43ac-b04b-75d932847cbe -Current
-Select-AzureSubscription -SubscriptionId 85182b66-6daa-40c6-bfa8-42dcc6d6845e -Current
+﻿Select-AzureSubscription -SubscriptionId 85182b66-6daa-40c6-bfa8-42dcc6d6845e -Current
 
 Switch-AzureMode -name AzureResourceManager
 
@@ -11,11 +10,11 @@ Switch-AzureMode -name AzureResourceManager
 $count = 1
 
 # Variables
-$templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\mainTemplate.json"
-$paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\nonha\parameters.json"
+$templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\azuredeploy.json"
+$paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\azuredeploy.parameters.json"
 $params = Get-content $paramsFile | convertfrom-json
 $location = "westus"
-$rgprefix = "NHA2"
+$rgprefix = "HA2"
 $premium = $true
 
 # Generate parameter object
@@ -39,6 +38,11 @@ for($i = 0; $i -lt $count; $i++)
     $hash.spCADNSPrefix = "spha" + $dsuffix + "ca"
     $hash.storageAccountNamePrefix = "storage" + $dsuffix
     $hash.location = $location
+    $hash.adminUsername = "admin123"
+    $hash.adminPassword = "Admin123_!"
+    $hash.sharePointSetupUserAccountUserName = "admin123"
+    $hash.sharePointFarmPassphrasePassword = "Admin123_!"
+
 
     if ($premium)
     {

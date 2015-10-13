@@ -186,7 +186,7 @@
             "typeHandlerVersion": "2.6",
             "autoUpgradeMinorVersion": true,
             "settings": {
-              "wmfVersion" : "5.0"
+              "wmfVersion" : "5.0PP"
             }
           }
         }
@@ -280,7 +280,7 @@
             "typeHandlerVersion": "2.6",
             "autoUpgradeMinorVersion": true,
             "settings": {
-              "wmfVersion" : "5.0"
+              "wmfVersion" : "5.0PP"
             }
           }
         }
