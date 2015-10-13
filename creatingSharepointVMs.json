@@ -105,7 +105,27 @@
 	 		 		  "storageUri": "[concat('http://',parameters('storageAccountNamePrefix'),'diag.blob.core.windows.net')]"
           }
         }
-      }
+      },
+      "resources" :[
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(parameters('spappVMName'),copyIndex(),'/ConfigureSPAppServer')]",
+          "apiVersion": "2015-06-15",
+          "location": "[parameters('location')]",
+          "dependsOn":[
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('spappVMName'),copyIndex()))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.7",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "wmfVersion" : "latest"
+            }
+          }
+        }
+      ]
     },
     {
       "apiVersion": "2015-06-15",
@@ -169,7 +189,27 @@
 	 		 		  "storageUri": "[concat('http://',parameters('storageAccountNamePrefix'),'diag.blob.core.windows.net')]"
           }
         }
-      }
+      },
+      "resources" :[
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(parameters('spwebVMName'),copyIndex(),'/ConfigureSPWebServer')]",
+          "apiVersion": "2015-06-15",
+          "location": "[parameters('location')]",
+          "dependsOn":[
+            "[resourceId('Microsoft.Compute/virtualMachines', concat(parameters('spwebVMName'),copyIndex()))]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.7",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "wmfVersion" : "latest"
+            }
+          }
+        }
+      ]
     }
   ],
   "outputs": {}

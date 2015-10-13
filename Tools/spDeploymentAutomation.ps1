@@ -7,14 +7,14 @@ Switch-AzureMode -name AzureResourceManager
 #######################################
 
 # Count of runs
-$count = 3
+$count = 4
 
 # Variables
 $templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\azuredeploy.json"
 $paramsFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\azuredeploy.parameters.json"
 $params = Get-content $paramsFile | convertfrom-json
 $location = "westus"
-$rgprefix = "HA2"
+$rgprefix = "HA"
 $premium = $true
 
 # Generate parameter object
