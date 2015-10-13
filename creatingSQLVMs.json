@@ -174,7 +174,7 @@
       "resources" :[
         {
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat(parameters('sqlwVMName'),'/PrepareDscExtension')]",
+          "name": "[concat(parameters('sqlwVMName'),'/CreateFileShareWitness')]",
           "apiVersion": "2015-06-15",
           "location": "[parameters('location')]",
           "dependsOn":[
@@ -183,10 +183,10 @@
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.6",
+            "typeHandlerVersion": "2.7",
             "autoUpgradeMinorVersion": true,
             "settings": {
-              "wmfVersion" : "5.0PP"
+              "wmfVersion" : "latest"
             }
           }
         }
@@ -268,7 +268,7 @@
       "resources" :[
         {
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat(parameters('sqlVMName'), copyindex(),'/PrepareDscExtension')]",
+          "name": "[concat(parameters('sqlVMName'), copyindex(),'/CreateCluster')]",
           "apiVersion": "2015-06-15",
           "location": "[parameters('location')]",
           "dependsOn":[
@@ -277,10 +277,10 @@
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.6",
+            "typeHandlerVersion": "2.7",
             "autoUpgradeMinorVersion": true,
             "settings": {
-              "wmfVersion" : "5.0PP"
+              "wmfVersion" : "latest"
             }
           }
         }

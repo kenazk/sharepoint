@@ -7,7 +7,7 @@ Switch-AzureMode -name AzureResourceManager
 #######################################
 
 # Count of runs
-$count = 1
+$count = 3
 
 # Variables
 $templateFile = "C:\Users\kenazk\Desktop\GitHub\sharepoint\azuredeploy.json"
